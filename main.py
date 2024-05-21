@@ -13,7 +13,12 @@ class Snake:
         self.length = length
         self.position = position
         self.direction = direction
+    
+    def draw(self):
+        pygame.draw.rect(window, (0, 255, 0), (*self.position, 10, 10))
 
+
+player1 = Snake(1, (WIDTH//2, HEIGHT//2), (0, 0))
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -25,4 +30,10 @@ while True:
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
         sys.exit()
+
+    window.fill((0, 0, 0))
+
+    player1.draw()
+
+    clock.tick(60)
 
