@@ -53,12 +53,13 @@ class Snake:
             x += 1 * self.player_speed
         
         self.position = (self.position[0] + x, self.position[1] + y)
+        self.position = (max(0, min(self.position[0], WIDTH - 50)), max(0, min(self.position[1], HEIGHT - 50)))
+
         self.head = pygame.rect.Rect((*self.position, 50, 50))
 
         for i in range(self.length):
             self.tails.append(pygame.rect.Rect(self.position[0] - 50 * (i+1), self.position[1], *self.tail_size))
 
-    # TODO: Ať se zvětší, když sežere ovoce
     def eat(self, fruit):
         return self.head.colliderect(fruit.fruit)        
 
