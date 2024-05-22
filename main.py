@@ -20,16 +20,24 @@ score = 0
 
 
 class Snake:
-    def __init__(self, length, position, player_speed) -> None:
+    def __init__(self, length, position, player_speed, tail_size) -> None:
         self.length = length
+        self.tail_size = tail_size
         self.position = position
         self.player_speed = player_speed
         self.head = pygame.rect.Rect((*self.position, 50, 50))
-        self.tail = pygame.rect.Rect((*self.position, 40, 40))
+        self.tails = []
         
     
     def draw(self):
+        # draw head
         pygame.draw.rect(window, WHITE, self.head)
+
+        #draw tail
+        for ocas in self.tails:
+            pygame.draw.rect(window, WHITE, ocas)
+        
+        self.tails.clear()
 
     def move(self, keys):
         x = 0
@@ -47,8 +55,12 @@ class Snake:
         self.position = (self.position[0] + x, self.position[1] + y)
         self.head = pygame.rect.Rect((*self.position, 50, 50))
 
+        for i in range(self.length):
+            self.tails.append(pygame.rect.Rect(self.position[0] - 50 * (i+1), self.position[1], *self.tail_size))
+
+    # TODO: Ať se zvětší, když sežere ovoce
     def eat(self, fruit):
-        return self.head.colliderect(fruit.fruit)
+        return self.head.colliderect(fruit.fruit)        
 
     
 
@@ -75,7 +87,7 @@ def ShowText(text):
 fruit = Fruit((randrange(10, 990), randrange(10, 790)))
 
 
-player1 = Snake(1, (10, 10), 2)
+player1 = Snake(1, (10, 10), 2, (45, 45))
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
