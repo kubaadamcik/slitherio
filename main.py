@@ -9,27 +9,28 @@ WIDTH, HEIGHT = 1000, 800
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+PLAYER_SIZE = (40, 40)
+FRUIT_SIZE = (30, 30)
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 font = pygame.font.Font(None, 36)
 
 # temp variables
-last_tick = 0
-interval = 5000
-score = 0
+
 
 
 class Snake:
-    def __init__(self, length, position, player_speed, tail_size) -> None:
+    def __init__(self, length, position, player_speed, tail_size, player_size) -> None:
         self.length = length
         self.tail_size = tail_size
         self.position = position
+        self.player_size = player_size
         self.player_speed = player_speed
-        self.head = pygame.rect.Rect((*self.position, 50, 50))
+        self.head = pygame.rect.Rect((*self.position, *self.player_size))
         self.tails = []
         
     
-    def draw(self):
+    def draw(self) -> None:
         # draw head
         pygame.draw.rect(window, WHITE, self.head)
 
@@ -39,7 +40,7 @@ class Snake:
         
         self.tails.clear()
 
-    def move(self, keys):
+    def move(self, keys) -> None:
         x = 0
         y = 0
         
@@ -53,9 +54,9 @@ class Snake:
             x += 1 * self.player_speed
         
         self.position = (self.position[0] + x, self.position[1] + y)
-        self.position = (max(0, min(self.position[0], WIDTH - 50)), max(0, min(self.position[1], HEIGHT - 50)))
+        self.position = (max(0, min(self.position[0], WIDTH - self.player_size[0])), max(0, min(self.position[1], HEIGHT - self.player_size[1])))
 
-        self.head = pygame.rect.Rect((*self.position, 50, 50))
+        self.head = pygame.rect.Rect((*self.position, *self.player_size))
 
         for i in range(self.length):
             self.tails.append(pygame.rect.Rect(self.position[0] - 50 * (i+1), self.position[1], *self.tail_size))
@@ -66,15 +67,16 @@ class Snake:
     
 
 class Fruit:
-    def __init__(self, position) -> None:
+    def __init__(self, position, fruit_size) -> None:
         self.position = position
-        self.fruit = pygame.rect.Rect((*self.position, 20, 20))
+        self.fruit_size = fruit_size
+        self.fruit = pygame.rect.Rect((*self.position, *self.fruit_size))
     
     def draw(self):
         pygame.draw.rect(window, RED, self.fruit)
 
     def spawn(self, new_pos):
-        self.fruit = pygame.rect.Rect((*new_pos, 20, 20))
+        self.fruit = pygame.rect.Rect((*new_pos, *self.fruit_size))
 
 
 def ShowText(text):
@@ -85,10 +87,10 @@ def ShowText(text):
 
     pygame.display.flip 
 
-fruit = Fruit((randrange(10, 990), randrange(10, 790)))
+fruit = Fruit((randrange(10, 990), randrange(10, 790)), FRUIT_SIZE)
 
 
-player1 = Snake(1, (10, 10), 2, (45, 45))
+player1 = Snake(1, (10, 10), 2, (45, 45), PLAYER_SIZE)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
