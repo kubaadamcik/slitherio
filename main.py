@@ -13,10 +13,11 @@ RED = (255, 0, 0)
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 font = pygame.font.Font(None, 36)
 
-# random variables
+# temp variables
 last_tick = 0
 interval = 5000
 score = 0
+
 
 class Snake:
     def __init__(self, length, position, player_speed) -> None:
@@ -24,6 +25,8 @@ class Snake:
         self.position = position
         self.player_speed = player_speed
         self.head = pygame.rect.Rect((*self.position, 50, 50))
+        self.tail = pygame.rect.Rect((*self.position, 40, 40))
+        
     
     def draw(self):
         pygame.draw.rect(window, WHITE, self.head)
