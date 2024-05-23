@@ -29,7 +29,7 @@ class Snake:
         self.tails = []
         self.right = False
         self.up = False
-        self.direction = [0, 0]
+        self.direction = [1, 0]
 
         
     
@@ -44,30 +44,30 @@ class Snake:
         self.tails.clear()
 
     def move(self, keys) -> None:
-        x = 0
-        y = 0
 
         if keys[pygame.K_UP]:
-            self.direction[1] = -1 * self.player_speed
+            self.direction[1] = -1
             self.direction[0] = 0
         if keys[pygame.K_DOWN]:
-            self.direction[1] = 1 * self.player_speed
+            self.direction[1] = 1
             self.direction[0] = 0
         if keys[pygame.K_LEFT]:
-            self.direction[0] = -1 * self.player_speed
+            self.direction[0] = -1
             self.direction[1] = 0
         if keys[pygame.K_RIGHT]:
-            self.direction[0] = 1 * self.player_speed
+            self.direction[0] = 1
             self.direction[1] = 0
 
-        self.position = (self.position[0] + self.direction[0], self.position[1] + self.direction[1])
+        self.position = (self.position[0] + self.direction[0] * self.player_speed, self.position[1] + self.direction[1] * self.player_speed)
         self.position = (max(0, min(self.position[0], WIDTH - self.player_size[0])), max(0, min(self.position[1], HEIGHT - self.player_size[1])))
 
         self.head = pygame.rect.Rect((*self.position, *self.player_size))
 
         # TODO: Otáčéní ocasu
         for i in range(self.length):
-                self.tails.append(pygame.rect.Rect(self.position[0] - self.tail_size[0] * self.direction[0] * (i + 1), self.position[1] - self.tail_size[1] * self.direction[1] * (i + 1), *self.tail_size))
+            x = self.position[0] - self.tail_size[0] * self.direction[0] * (i + 1)
+            y =  self.position[1] - self.tail_size[1] * self.direction[1] * (i + 1)
+            self.tails.append(pygame.rect.Rect(x, y, *self.tail_size))
 
 
     def eat(self, fruit):
