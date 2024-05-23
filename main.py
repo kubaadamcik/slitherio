@@ -20,6 +20,7 @@ score = 1
 vra = "ae"
 
 
+
 class Snake:
     def __init__(self, length, position, player_speed, tail_size, player_size) -> None:
         self.length = length
