@@ -17,7 +17,6 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 font = pygame.font.Font(None, 36)
 
 # temp variables
-score = 1
 
 class Snake:
     def __init__(self, length, position, player_speed, tail_size, player_size) -> None:
@@ -30,6 +29,8 @@ class Snake:
         self.tails = []
         self.right = False
         self.up = False
+        self.direction = [0, 0]
+
         
     
     def draw(self) -> None:
@@ -46,34 +47,27 @@ class Snake:
         x = 0
         y = 0
 
-        # TODO: Omezit pohyb pouze jedním směrem
         if keys[pygame.K_UP]:
-            y -= 1 * self.player_speed
+            self.direction[1] = -1 * self.player_speed
+            self.direction[0] = 0
         if keys[pygame.K_DOWN]:
-            y += 1 * self.player_speed
+            self.direction[1] = 1 * self.player_speed
+            self.direction[0] = 0
         if keys[pygame.K_LEFT]:
-            x -= 1 * self.player_speed
+            self.direction[0] = -1 * self.player_speed
+            self.direction[1] = 0
         if keys[pygame.K_RIGHT]:
-            x += 1 * self.player_speed
+            self.direction[0] = 1 * self.player_speed
+            self.direction[1] = 0
 
-        if x > 1:
-            self.right = True
-            y = 0
-        elif x < 0:
-            self.right = False
-            y = 0
-
-        
-        self.position = (self.position[0] + x, self.position[1] + y)
+        self.position = (self.position[0] + self.direction[0], self.position[1] + self.direction[1])
         self.position = (max(0, min(self.position[0], WIDTH - self.player_size[0])), max(0, min(self.position[1], HEIGHT - self.player_size[1])))
 
         self.head = pygame.rect.Rect((*self.position, *self.player_size))
 
+        # TODO: Otáčéní ocasu
         for i in range(self.length):
-            if self.right:
-                self.tails.append(pygame.rect.Rect(self.position[0] - self.tail_size[0] * (i+1), self.position[1], *self.tail_size))
-            else:
-                self.tails.append(pygame.rect.Rect(self.position[0] + self.tail_size[0] * (i+1), self.position[1], *self.tail_size))
+                self.tails.append(pygame.rect.Rect(self.position[0] - self.tail_size[0] * self.direction[0] * (i + 1), self.position[1] - self.tail_size[1] * self.direction[1] * (i + 1), *self.tail_size))
 
 
     def eat(self, fruit):
