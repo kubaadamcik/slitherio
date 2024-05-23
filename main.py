@@ -16,7 +16,8 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 font = pygame.font.Font(None, 36)
 
 # temp variables
-score = 0
+score = 1
+vra = "ae"
 
 
 class Snake:
