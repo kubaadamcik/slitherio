@@ -17,8 +17,6 @@ font = pygame.font.Font(None, 36)
 
 # temp variables
 score = 1
-vra = "ae"
-
 
 
 class Snake:
