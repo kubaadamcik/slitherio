@@ -9,18 +9,21 @@ WIDTH, HEIGHT = 1000, 800
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+GRAY = (128, 128, 128)
+
 PLAYER_SIZE = (45, 45)
 FRUIT_SIZE = (30, 30)
 TAIL_SIZE = (45, 45)
 PLAYER_SPEED = 2
 
+
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-font = pygame.font.Font(None, 36)
+
 
 # temp variables
 
 class Snake:
-    def __init__(self, length, player_position, player_speed, tail_size, player_size) -> None:
+    def __init__(self, length, player_position, player_speed, tail_size, player_size, dead) -> None:
         self.length = length
         self.tail_size = tail_size
         self.player_position = player_position
@@ -33,6 +36,7 @@ class Snake:
         self.new_direction = [1, 0]
         self.old_direction = [1, 0]
         self.turning_pos = self.player_position
+        self.dead = dead
 
         
     
@@ -93,8 +97,11 @@ class Snake:
     # TODO: Dodělat
     def check_death(self):
         if self.player_position[0] + PLAYER_SIZE[0] >= WIDTH or self.player_position[0] <= 0:
-            return True
+            self.dead = True
         if self.player_position[1] + PLAYER_SIZE[1] >= HEIGHT or self.player_position[1] <= 0:
+            self.dead = True
+
+        if self.dead == True:
             return True
 
     
@@ -112,20 +119,24 @@ class Fruit:
         self.fruit = pygame.rect.Rect((*new_pos, *self.fruit_size))
 
 
-def ShowText(text):
-    text = font.render(str(text), True, WHITE)
+def ShowText(text, position, size, color):
+    font = pygame.font.Font(None, size)
+    text = font.render(str(text), True, color)
     textRect = text.get_rect()
-    textRect.center = (WIDTH // 2, HEIGHT // 2)
+    textRect.center = (position[0], position[1])
     window.blit(text, textRect) 
 
     pygame.display.flip 
 
 def MainMenu():
-    pass
+    ShowText("Zemřel jsi", (WIDTH // 2, HEIGHT // 2), 36, WHITE)
+    ShowText("Stiskni F pro restart", (WIDTH // 2, HEIGHT // 2 + 50), 36, WHITE)
 
+
+# declare objects
 fruit = Fruit((randrange(10, 990), randrange(10, 790)), FRUIT_SIZE)
 
-player1 = Snake(1, (10, 10), PLAYER_SPEED, TAIL_SIZE, PLAYER_SIZE)
+player1 = Snake(1, (10, 10), PLAYER_SPEED, TAIL_SIZE, PLAYER_SIZE, False)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -154,9 +165,14 @@ while True:
             fruit.spawn((randrange(10, 990, 10), randrange(10, 790, 10)))
 
         
-        ShowText(player1.length)
+        
+        ShowText("stiskni ESC pro ukončení", (WIDTH // 2, HEIGHT - 50), 30, GRAY)
     else:
-        ShowText("You died")
+        MainMenu()
+
+        if keys[pygame.K_f]:
+            player1 = Snake(1, (10, 10), PLAYER_SPEED, TAIL_SIZE, PLAYER_SIZE, False)
+            fruit.spawn((randrange(10, 990, 10), randrange(10, 790, 10)))
 
     pygame.display.update()
 
