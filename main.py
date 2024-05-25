@@ -12,6 +12,7 @@ RED = (255, 0, 0)
 PLAYER_SIZE = (45, 45)
 FRUIT_SIZE = (30, 30)
 TAIL_SIZE = (45, 45)
+PLAYER_SPEED = 2
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 font = pygame.font.Font(None, 36)
@@ -90,8 +91,11 @@ class Snake:
         return self.head.colliderect(fruit.fruit)
     
     # TODO: Dodělat
-    def check_death(self, tail, border):
-        pass
+    def check_death(self):
+        if self.player_position[0] + PLAYER_SIZE[0] >= WIDTH or self.player_position[0] <= 0:
+            return True
+        if self.player_position[1] + PLAYER_SIZE[1] >= HEIGHT or self.player_position[1] <= 0:
+            return True
 
     
 
@@ -116,10 +120,12 @@ def ShowText(text):
 
     pygame.display.flip 
 
+def MainMenu():
+    pass
+
 fruit = Fruit((randrange(10, 990), randrange(10, 790)), FRUIT_SIZE)
 
-
-player1 = Snake(1, (10, 10), 1, TAIL_SIZE, PLAYER_SIZE)
+player1 = Snake(1, (10, 10), PLAYER_SPEED, TAIL_SIZE, PLAYER_SIZE)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -135,19 +141,22 @@ while True:
     window.fill((0, 0, 0))
 
 
+    if not player1.check_death():
+        fruit.draw()
 
-    fruit.draw()
+        player1.draw()
 
-    player1.draw()
+        player1.move(keys)
 
-    player1.move(keys)
+        if player1.check_eat(fruit):
+            player1.length += 1
 
-    if player1.check_eat(fruit):
-        player1.length += 1
+            fruit.spawn((randrange(10, 990, 10), randrange(10, 790, 10)))
 
-        fruit.spawn((randrange(10, 990, 10), randrange(10, 790, 10)))
-    
-    ShowText(player1.length)
+        
+        ShowText(player1.length)
+    else:
+        ShowText("You died")
 
     pygame.display.update()
 
