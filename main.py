@@ -19,7 +19,7 @@ PLAYER_SPEED = 1
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-game_started = True
+game_started = False
 
 
 # temp variables
