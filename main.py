@@ -14,12 +14,12 @@ GRAY = (128, 128, 128)
 PLAYER_SIZE = (45, 45)
 FRUIT_SIZE = (30, 30)
 TAIL_SIZE = (45, 45)
-PLAYER_SPEED = 2
+PLAYER_SPEED = 1
 
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-game_started = False
+game_started = True
 
 
 # temp variables
@@ -35,8 +35,8 @@ class Snake:
         self.tails = []
         self.right = False
         self.up = False
-        self.new_direction = [1, 0]
-        self.old_direction = [1, 0]
+        self.suggested_direction = [1, 0]
+        self.direction = [1, 0]
         self.turning_pos = self.player_position
         self.dead = dead
 
@@ -55,40 +55,39 @@ class Snake:
     def move(self, keys) -> None:
 
         if keys[pygame.K_UP]:
-            self.new_direction[1] = -1
-            self.new_direction[0] = 0
+            self.suggested_direction[1] = -1
+            self.suggested_direction[0] = 0
             self.turning_pos = self.player_position
         if keys[pygame.K_DOWN]:
-            self.new_direction[1] = 1
-            self.new_direction[0] = 0
+            self.suggested_direction[1] = 1
+            self.suggested_direction[0] = 0
             self.turning_pos = self.player_position
         if keys[pygame.K_LEFT]:
-            self.new_direction[0] = -1
-            self.new_direction[1] = 0
+            self.suggested_direction[0] = -1
+            self.suggested_direction[1] = 0
             self.turning_pos = self.player_position
         if keys[pygame.K_RIGHT]:
-            self.new_direction[0] = 1
-            self.new_direction[1] = 0
+            self.suggested_direction[0] = 1
+            self.suggested_direction[1] = 0
             self.turning_pos = self.player_position
         
 
-        self.player_position = (self.player_position[0] + self.new_direction[0] * self.player_speed, self.player_position[1] + self.new_direction[1] * self.player_speed)
+        self.player_position = (self.player_position[0] + self.suggested_direction[0] * self.player_speed, self.player_position[1] + self.suggested_direction[1] * self.player_speed)
         self.player_position = (max(0, min(self.player_position[0], WIDTH - self.player_size[0])), max(0, min(self.player_position[1], HEIGHT - self.player_size[1])))
 
         self.head = pygame.rect.Rect((*self.player_position, *self.player_size))
 
         # TODO: Ocas pronásleduje hada postupně
         for i in range(self.length):
-            x = self.player_position[0] - self.tail_size[0] * self.old_direction[0] * (i + 1)
-            y =  self.player_position[1] - self.tail_size[1] * self.old_direction[1] * (i + 1)
+            x = self.player_position[0] - self.tail_size[0] * self.direction[0] * (i + 1)
+            y =  self.player_position[1] - self.tail_size[1] * self.direction[1] * (i + 1)
 
             if x == self.turning_pos[0] and y == self.turning_pos[1]:
-                self.old_direction = self.new_direction
-                x = self.player_position[0] - self.tail_size[0] * self.new_direction[0] * (i + 1)
-                y =  self.player_position[1] - self.tail_size[1] * self.new_direction[1] * (i + 1)
+                self.direction = self.suggested_direction
+                x = self.player_position[0] - self.tail_size[0] * self.suggested_direction[0] * (i + 1)
+                y =  self.player_position[1] - self.tail_size[1] * self.suggested_direction[1] * (i + 1)
                 self.tails.append(pygame.rect.Rect(x, y, *self.tail_size))
             else:
-                self.new_direction = self.old_direction
                 self.tails.append(pygame.rect.Rect(x, y, *self.tail_size))
 
 
