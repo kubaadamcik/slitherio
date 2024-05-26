@@ -19,6 +19,8 @@ PLAYER_SPEED = 2
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
+game_started = False
+
 
 # temp variables
 
@@ -128,9 +130,13 @@ def ShowText(text, position, size, color):
 
     pygame.display.flip 
 
-def MainMenu():
+def DeathScreen():
     ShowText("Zemřel jsi", (WIDTH // 2, HEIGHT // 2), 36, WHITE)
     ShowText("Stiskni F pro restart", (WIDTH // 2, HEIGHT // 2 + 50), 36, WHITE)
+
+def MainScreen():
+    ShowText("Hra had", (WIDTH // 2, HEIGHT // 2 - 50), 36, WHITE)
+    ShowText("Stiskni F pro start", (WIDTH // 2, HEIGHT // 2), 36, WHITE)
 
 
 # declare objects
@@ -152,7 +158,9 @@ while True:
     window.fill((0, 0, 0))
 
 
-    if not player1.check_death():
+    if not player1.dead and game_started:
+        player1.check_death()
+
         fruit.draw()
 
         player1.draw()
@@ -167,12 +175,17 @@ while True:
         
         
         ShowText("stiskni ESC pro ukončení", (WIDTH // 2, HEIGHT - 50), 30, GRAY)
-    else:
-        MainMenu()
+    elif player1.dead and game_started:
+        DeathScreen()
 
         if keys[pygame.K_f]:
             player1 = Snake(1, (10, 10), PLAYER_SPEED, TAIL_SIZE, PLAYER_SIZE, False)
             fruit.spawn((randrange(10, 990, 10), randrange(10, 790, 10)))
+    elif not game_started:
+        MainScreen()
+
+        if keys[pygame.K_f]:
+            game_started = True
 
     pygame.display.update()
 
